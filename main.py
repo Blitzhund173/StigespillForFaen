@@ -10,27 +10,21 @@ blue=0,0,255
 green=0,255,0
 yellow=255,255,0
 
+currentPlayer=0
+currentPlayerPos=[0,0,0,0]
+xCoords=[0]
+yCoords=[0]
+
+class Block:
+    def __init__(self,pos):
+        self.color=white
+        self.pos=pos
+    def paintBlock(self,color):
+        self.color=color
+        pass
+
 screen=pygame.display.set_mode(size)#, pygame.SCALED
 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT: sys.exit()
-    screen.fill(black)
-    pygame.display.flip()
-    time.sleep(0.01666)
-    screen.fill(white)
-    pygame.display.flip()
-    time.sleep(0.01666)
-    screen.fill(red)
-    pygame.display.flip()
-    time.sleep(0.01666)
-    screen.fill(blue)
-    pygame.display.flip()
-    time.sleep(0.01666)
-    screen.fill(green)
-    pygame.display.flip()
-    time.sleep(0.01666)
-    screen.fill(yellow)
-    pygame.display.flip()
-
-print("det funker for faen")
