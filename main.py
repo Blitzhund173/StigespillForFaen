@@ -1,7 +1,9 @@
 import sys,pygame, os, time
 pygame.init()
 
-size=width, height= 720, 720
+size=width, height=720, 720
+#Husk å gange alt med 1,5
+
 
 black=0, 0, 0
 white=255,255,255
@@ -15,16 +17,26 @@ currentPlayerPos=[0,0,0,0]
 xCoords=[0]
 yCoords=[0]
 
-class Block:
-    def __init__(self,pos):
-        self.color=white
-        self.pos=pos
-    def paintBlock(self,color):
-        self.color=color
-        pass
+def drawSquare(color,posX,posY):
+    pygame.draw.rect(screen,color,pygame.Rect(posX,posY,70,70))
 
-screen=pygame.display.set_mode(size)#, pygame.SCALED
+def drawNumber(text,posX,posY):
+    font=pygame.font.Font("freesansbold.ttf",16)
+    number=font.render(str(text),True,(0,0,0))
+    screen.blit(number,(posX,posY))
+    pygame.display.flip()
+
+screen=pygame.display.set_mode(size)
+
+for x in range(0,10):
+        for y in range(0,10):
+            drawSquare(white,x*72+1,y*72+1)
+            drawNumber(x,x*72+1,y*72+1)
+            pygame.display.flip()
+            
 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT: sys.exit()
+    
+    
