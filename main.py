@@ -2,7 +2,7 @@ import sys,pygame, os, time, random
 pygame.init()
 
 #Sets the size of the window
-size=width, height=720, 720
+size=width, height=1000, 720
 #Husk å gange alt med 1,5
 
 #Defines some colores we will use later
@@ -73,24 +73,67 @@ def drawNumber(text,posX,posY):
     screen.blit(number,(posX,posY))
     pygame.display.flip()
 
-def move(num):
-    global currentPlayer
-    for i in range(0,num):
-        time.sleep(0.5)
-        currentPlayerPos[currentPlayer]+=1
+def moveBack(num):
+    screen.blit(playerList[currentPlayer],rectList[currentPlayer])
+    for i in range(0,num-1):
+        currentPlayerPos[currentPlayer]-=1 
         rectList[currentPlayer].topleft=xCoords[currentPlayerPos[currentPlayer]]*72+1,yCoords[currentPlayerPos[currentPlayer]]*72+1
         screen.blit(playerList[currentPlayer],rectList[currentPlayer])
         drawSquare(colorList[currentPlayer],xCoords[currentPlayerPos[currentPlayer]]*72+1,yCoords[currentPlayerPos[currentPlayer]]*72+1)
         drawNumber(f"{currentPlayerPos[currentPlayer]}",xCoords[currentPlayerPos[currentPlayer]]*72+1,yCoords[currentPlayerPos[currentPlayer]]*72+1)
-        drawSquare(colorList[currentPlayer],xCoords[currentPlayerPos[currentPlayer]-1]*72+1,yCoords[currentPlayerPos[currentPlayer]-1]*72+1)
-        drawNumber(f"{currentPlayerPos[currentPlayer]-1}",xCoords[currentPlayerPos[currentPlayer]-1]*72+1,yCoords[currentPlayerPos[currentPlayer]-1]*72+1)
-        colorBlockList[currentPlayer].append(currentPlayerPos)
+        drawSquare(colorList[currentPlayer],xCoords[currentPlayerPos[currentPlayer]+1]*72+1,yCoords[currentPlayerPos[currentPlayer]+1]*72+1)
+        drawNumber(f"{currentPlayerPos[currentPlayer]+1}",xCoords[currentPlayerPos[currentPlayer]+1]*72+1,yCoords[currentPlayerPos[currentPlayer]+1]*72+1)
+        if currentPlayerPos[currentPlayer] in ladderList:
+            drawSquare(colorList[currentPlayer],xCoords[currentPlayerPos[currentPlayer]]*72+1,yCoords[currentPlayerPos[currentPlayer]]*72+1)
+            drawNumber(f"{currentPlayerPos[currentPlayer]}",xCoords[currentPlayerPos[currentPlayer]]*72+1,yCoords[currentPlayerPos[currentPlayer]]*72+1)
+            currentPlayerPos[currentPlayer]=endLadderList[int(ladderList.index(currentPlayerPos[currentPlayer]))]
+            rectList[currentPlayer].topleft=xCoords[currentPlayerPos[currentPlayer]]*72+1,yCoords[currentPlayerPos[currentPlayer]]*72+1
+            screen.blit(playerList[currentPlayer],rectList[currentPlayer])
+            drawSquare(colorList[currentPlayer],xCoords[currentPlayerPos[currentPlayer]]*72+1,yCoords[currentPlayerPos[currentPlayer]]*72+1)
+            drawNumber(f"{currentPlayerPos[currentPlayer]}",xCoords[currentPlayerPos[currentPlayer]]*72+1,yCoords[currentPlayerPos[currentPlayer]]*72+1)
         for i in range(0,4):
-            screen.blit(playerList[i],rectList[i])
-            pygame.display.flip()
+                    screen.blit(playerList[i],rectList[i])
+                    pygame.display.flip()
+        time.sleep(0.3)
+
+def move(num):
+    global currentPlayer
+    for i in range(0,num):
+        time.sleep(0.3)
+        currentPlayerPos[currentPlayer]+=1
+        if currentPlayerPos[currentPlayer]>=100:
+            if i>=num:
+                font=pygame.font.Font("Freesansbold.ttf",32)
+                winText=font.render(str(f"Player {currentPlayer+1} is the winner!"),True,(colorList[currentPlayer]))
+                exit
+            else:
+                moveBack(num-i)
+                for i in range(0,4):
+                    screen.blit(playerList[i],rectList[i])
+                    pygame.display.flip()
+                break                
+        else:
+            rectList[currentPlayer].topleft=xCoords[currentPlayerPos[currentPlayer]]*72+1,yCoords[currentPlayerPos[currentPlayer]]*72+1
+            screen.blit(playerList[currentPlayer],rectList[currentPlayer])
+            drawSquare(colorList[currentPlayer],xCoords[currentPlayerPos[currentPlayer]]*72+1,yCoords[currentPlayerPos[currentPlayer]]*72+1)
+            drawNumber(f"{currentPlayerPos[currentPlayer]}",xCoords[currentPlayerPos[currentPlayer]]*72+1,yCoords[currentPlayerPos[currentPlayer]]*72+1)
+            drawSquare(colorList[currentPlayer],xCoords[currentPlayerPos[currentPlayer]-1]*72+1,yCoords[currentPlayerPos[currentPlayer]-1]*72+1)
+            drawNumber(f"{currentPlayerPos[currentPlayer]-1}",xCoords[currentPlayerPos[currentPlayer]-1]*72+1,yCoords[currentPlayerPos[currentPlayer]-1]*72+1)
+            colorBlockList[currentPlayer].append(currentPlayerPos)
+            for i in range(0,4):
+                screen.blit(playerList[i],rectList[i])
+                pygame.display.flip()
     
     if currentPlayerPos[currentPlayer] in ladderList:
+        drawSquare(colorList[currentPlayer],xCoords[currentPlayerPos[currentPlayer]]*72+1,yCoords[currentPlayerPos[currentPlayer]]*72+1)
+        drawNumber(f"{currentPlayerPos[currentPlayer]}",xCoords[currentPlayerPos[currentPlayer]]*72+1,yCoords[currentPlayerPos[currentPlayer]]*72+1)
         currentPlayerPos[currentPlayer]=endLadderList[int(ladderList.index(currentPlayerPos[currentPlayer]))]
+        rectList[currentPlayer].topleft=xCoords[currentPlayerPos[currentPlayer]]*72+1,yCoords[currentPlayerPos[currentPlayer]]*72+1
+        screen.blit(playerList[currentPlayer],rectList[currentPlayer])
+        drawSquare(colorList[currentPlayer],xCoords[currentPlayerPos[currentPlayer]]*72+1,yCoords[currentPlayerPos[currentPlayer]]*72+1)
+        drawNumber(f"{currentPlayerPos[currentPlayer]}",xCoords[currentPlayerPos[currentPlayer]]*72+1,yCoords[currentPlayerPos[currentPlayer]]*72+1)
+
+        pygame.display.flip()
         
 
     for i in range(0,4):
@@ -106,15 +149,15 @@ diceRect=[]
 for i in range(1,7):
     dices.append(pygame.image.load(f"Assets/{i}.png"))
     diceRect.append(dices[i-1].get_rect())
-    diceRect[i-1].center=360,360
+    diceRect[i-1].center=850,360
 
 def diceRoll():
-    for i in range(0,6):
+    for i in range(0,10):
         rand=random.randint(0,5)
         print(rand)
         screen.blit(dices[rand],diceRect[rand])
         pygame.display.flip()
-        time.sleep(0.5)
+        time.sleep(0.2)
     return rand+1
 
 screen.fill(black)
@@ -166,7 +209,8 @@ screen.blit(greenPlayer,greenRect)
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT: sys.exit()
-    
-    
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                move(diceRoll())
 
     pygame.display.flip()
